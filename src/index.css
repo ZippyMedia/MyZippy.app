@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #050a12;
+    color: #e2e8f0;
+  }
+
+  :root {
+    --zippy-green: #39e639;
+    --zippy-green-glow: rgba(57, 230, 57, 0.35);
+    --zippy-bg: #050a12;
+    --zippy-surface: #0d1420;
+    --zippy-surface-2: #111827;
+    --zippy-border: rgba(57, 230, 57, 0.15);
+    --zippy-border-dim: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@layer utilities {
+  .neon-text {
+    color: #39e639;
+    text-shadow: 0 0 20px rgba(57, 230, 57, 0.6), 0 0 40px rgba(57, 230, 57, 0.3);
+  }
+  .neon-border {
+    border-color: rgba(57, 230, 57, 0.35);
+    box-shadow: 0 0 12px rgba(57, 230, 57, 0.15), inset 0 0 12px rgba(57, 230, 57, 0.04);
+  }
+  .neon-glow {
+    box-shadow: 0 0 24px rgba(57, 230, 57, 0.4), 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .card-dark {
+    background: #0d1420;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .card-dark-hover:hover {
+    background: #111827;
+    border-color: rgba(57, 230, 57, 0.25);
+    box-shadow: 0 0 20px rgba(57, 230, 57, 0.1);
+  }
+}
