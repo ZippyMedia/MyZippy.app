@@ -3,7 +3,7 @@ import { founderCopy } from "./landing-copy";
 
 const steps = [
   ["The call comes in—and you can’t answer","You’re up a ladder, under a sink, driving, or already with a customer."],
-  ["Zippy AI assistant answers or sends a text back instantly.","Your choice how Zippy responds."],
+  ["Zippy AI assistant answers or sends a text back instantly.","You choose how Zippy responds."],
   ["The lead lands in your inbox","Caller details and conversation history stay together with SMS, web chat, Messenger and Instagram."],
   ["Zippy follows up and offers times","It handles common questions, offers available appointments and keeps the conversation moving."],
   ["You get the booking","The appointment appears on your calendar, with the complete conversation attached to the contact."],
@@ -15,11 +15,10 @@ export default function Home() {
     <header className="nav-shell">
       <a className="brand brand-logo" href="#top" aria-label="MyZippy.app home"><img src="/myzippy-logo.png" alt="MyZippy.app" /></a>
       <nav aria-label="Primary navigation"><a href="#features">Features</a><a href="#features">Watch Demo</a><a href="#how">How it works</a><a href="#why">Why Zippy</a><a href="#pricing">Pricing</a></nav>
-      <a className="button button-small" href={signup}>Claim your Prelaunch Pricing and Free 14 Day Trial</a>
     </header>
 
     <section className="hero section" id="top">
-      <div className="hero-copy"><p className="eyebrow">AI-powered business automation</p><h1>Run your business from the palm of <em>your hand.</em></h1><p className="lead">Never miss a <strong>call, client, or dollar</strong> again. MyZippy brings your messages, follow-ups, bookings and business tools into one app. MyZippy.app offers all the media and marketing tools you need for success.</p><div className="actions hero-cta-pair"><a className="button" href={signup}>Claim your Prelaunch Pricing and Free 14 Day Trial</a><a className="button" href="https://demo.myzippy.app/">Click to see how MyZippy.app works</a></div><p className="fineprint">Prelaunch special offer <span>•</span> Priority access for the first to respond</p></div>
+      <div className="hero-copy"><p className="eyebrow">AI-powered business automation</p><h1>Run your business from the palm of <em>your hand.</em></h1><p className="lead">Never miss a <strong>call, client, or dollar</strong> again. MyZippy brings your messages, follow-ups, bookings and business tools into one app. MyZippy.app offers all the media and marketing tools you need for success.</p><div className="actions hero-cta-pair"><a className="button" href="https://demo.myzippy.app/">Click to See the MyZippy.app</a></div><p className="fineprint">Prelaunch special offer <span>•</span> Priority access for the first to respond</p></div>
       <div className="hero-art"><div className="glow"/><img src="/zippy-hero.png" alt="Zippy mascot holding a phone showing the MyZippy dashboard"/></div>
     </section>
     <div className="ticker"><div>More leads <i>•</i> More bookings <i>•</i> More sales <i>•</i> More freedom <i>•</i> One app. Total control.</div></div>

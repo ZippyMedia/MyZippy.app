@@ -21,7 +21,7 @@ const tour = [
   { title: "Everything you need to keep business moving", target: "features-intro", narration: "Everything you need to keep business moving. Let's take a quick look." },
   ...features.map((feature, index) => ({ ...feature, target: `feature-card-${index}` })),
   { title: "How it works · The missed call", target: "tour-step-0", narration: "Here's how it connects: you're working and miss a call." },
-  { title: "How it works · Your choice of response", target: "tour-step-1", narration: "Zippy AI assistant answers or sends a text back instantly. Your choice how Zippy responds." },
+  { title: "How it works · Your choice of response", target: "tour-step-1", narration: "Zippy AI assistant answers or sends a text back instantly. You choose how Zippy responds." },
   { title: "How it works · One inbox", target: "tour-step-2", narration: "The lead and conversation land in your unified inbox." },
   { title: "How it works · Follow-up and scheduling", target: "tour-step-3", narration: "Zippy answers questions, follows up, and offers available times." },
   { title: "How it works · The booking", target: "tour-step-4", narration: "The booking appears on your calendar, with the conversation attached." },
@@ -43,7 +43,7 @@ function chooseNarrator(voices: SpeechSynthesisVoice[]) {
   const candidates = english.filter(v => matches(v.name, male) && !matches(v.name, female));
   const score = (voice: SpeechSynthesisVoice) => {
     const name = voice.name.toLowerCase();
-    return (matches(name, youthful) ? 100 : 0) + (matches(name, ["natural", "premium", "enhanced", "neural"]) ? 45 : 0) + (/^en[-_]US$/i.test(voice.lang) ? 20 : 0) + (voice.localService ? 1 : 0);
+    return (matches(name, youthful) ? 40 : 0) + (matches(name, ["natural", "premium", "enhanced", "neural"]) ? 200 : 0) + (/^en[-_]US$/i.test(voice.lang) ? 20 : 0) + (voice.localService ? 1 : 0);
   };
   return candidates.sort((a, b) => score(b) - score(a))[0] || english.find(v => /^en[-_]US$/i.test(v.lang)) || english[0];
 }
@@ -56,6 +56,7 @@ export default function FeatureDemo() {
   const run = useRef(0);
   const startedOrRequested = useRef(false);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
+  const speechQueue = useRef<SpeechSynthesisUtterance[]>([]);
   const narrator = useRef<SpeechSynthesisVoice | undefined>(undefined);
   const transition = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoplayWatch = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,6 +83,7 @@ export default function FeatureDemo() {
       run.current++;
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       utterance.current = null;
+      speechQueue.current = [];
       setPlaying(false);
     };
     const visibility = () => { if (document.hidden) { cancel(); setStatus("Demo stopped. Tap Replay Demo to start again."); } };
@@ -122,6 +124,7 @@ export default function FeatureDemo() {
     run.current++;
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     utterance.current = null;
+      speechQueue.current = [];
     setPlaying(false);
     setStatus("Demo stopped. Tap Replay Demo to start again.");
   }
@@ -139,6 +142,7 @@ export default function FeatureDemo() {
       if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
       window.speechSynthesis.cancel();
       utterance.current = null;
+      speechQueue.current = [];
       setActive(null);
       setPlaying(false);
       setAudioBlocked(true);
@@ -170,13 +174,12 @@ export default function FeatureDemo() {
       if (i >= tour.length) {
         setPlaying(false);
         utterance.current = null;
+      speechQueue.current = [];
         setStatus("Tour complete. Claim your prelaunch offer below, or replay anytime.");
         return;
       }
-      setActive(i);
-      setStatus(`${fullTour ? "Section " + (i + 1) + " of " + tour.length + " · " : "Now playing · "}${tour[i].title}`);
       const u = new SpeechSynthesisUtterance(tour[i].narration);
-      utterance.current = u;
+      speechQueue.current.push(u);
       u.lang = "en-US";
       u.rate = .98;
       u.pitch = 1;
@@ -186,8 +189,13 @@ export default function FeatureDemo() {
       u.onstart = () => {
         if (token !== run.current) return;
         began = true;
+        utterance.current = u;
+        setActive(i);
+        setStatus(`${fullTour ? "Section " + (i + 1) + " of " + tour.length + " · " : "Now playing · "}${tour[i].title}`);
         startedOrRequested.current = true;
         if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
+        // Prepare the next section while this one speaks, removing timer gaps.
+        if (fullTour && i + 1 < tour.length) speak(i + 1);
         const card = document.getElementById(tour[i].target);
         if (!card) return;
         const rect = card.getBoundingClientRect();
@@ -204,17 +212,27 @@ export default function FeatureDemo() {
       };
       u.onend = () => {
         if (token !== run.current) return;
+        speechQueue.current = speechQueue.current.filter(item => item !== u);
         if (fullTour) {
+          if (i === tour.length - 1) {
+            setPlaying(false);
+            utterance.current = null;
+            setStatus("Tour complete. Claim your prelaunch offer below, or replay anytime.");
+          }
+        } else {
+          setPlaying(false);
           utterance.current = null;
-          transition.current = setTimeout(() => speak(i + 1), 180);
+          setStatus(`${tour[i].title} complete. Choose another feature, or replay the full demo.`);
         }
-        else { setPlaying(false); utterance.current = null; setStatus(`${tour[i].title} complete. Choose another feature, or replay the full demo.`); }
       };
       u.onerror = () => {
         if (token !== run.current) return;
         if (autoplay && i === index && !began) { requestTap(); return; }
+        run.current++;
+        window.speechSynthesis.cancel();
         setPlaying(false);
         utterance.current = null;
+      speechQueue.current = [];
         setStatus("Audio couldn't play. Tap a feature to try again; its description is shown below.");
       };
       try {
