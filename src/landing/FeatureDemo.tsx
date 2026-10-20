@@ -139,7 +139,15 @@ export default function FeatureDemo() {
         const card = document.getElementById(tour[i].target);
         if (!card) return;
         const rect = card.getBoundingClientRect();
-        if (rect.top < 145 || rect.bottom > window.innerHeight) card.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "center" });
+        // Align each narrated feature's row below the sticky header, even if
+        // it was already visible. Cards in the same grid row share a position.
+        const isFeature = i < features.length;
+        if (isFeature || rect.top < 145 || rect.bottom > window.innerHeight) {
+          card.scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+            block: isFeature ? "start" : "center",
+          });
+        }
       };
       u.onend = () => {
         if (token !== run.current) return;
