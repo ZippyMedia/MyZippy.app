@@ -1,4 +1,5 @@
 import FeatureDemo from "./FeatureDemo";
+import { founderCopy } from "./landing-copy";
 
 const steps = [
   ["The call comes in—and you can’t answer","You’re up a ladder, under a sink, driving, or already with a customer."],
@@ -27,9 +28,9 @@ export default function Home() {
 
     <section className="section how-section" id="how"><div className="section-heading"><p className="eyebrow">How it works</p><h2>A missed call becomes a booked job—on its own.</h2><p>The recovery loop runs while you’re on the tools. You only step in when there’s something worth your time.</p></div><div className="steps">{steps.map((s,i)=><article id={`tour-step-${i}`} key={s[0]}><span>{i+1}</span><div><h3>{s[0]}</h3><p>{s[1]}</p></div></article>)}</div></section>
 
-    <section className="section founder" id="why"><div><p className="eyebrow founder-experience">Built from real experience</p><h2>Built by a contractor who knows what a missed call costs.</h2><p>MyZippy.app grew from more than 40 years in the trades—where a ringing phone can mean the next job, but stopping work to answer every call isn’t always possible.</p><p>The founder and dedicated volunteers also created The SMART Ride. Over 20 years, participants raised $17 million for Florida HIV/AIDS organizations, with 100% of participant-raised funds going to the cause. That spirit of service continues through MyZippy’s Ambassador and fundraising programs.</p></div><div className="stat"><img src="/paul-myzippy.png" alt="Paul, founder of MyZippy.app" /></div></section>
+    <section className="section founder" id="why"><div><p className="eyebrow founder-experience">Built from real experience</p><h2>{founderCopy.heading}</h2>{founderCopy.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div><div className="stat"><img src="/paul-myzippy.png" alt="Paul, founder of MyZippy.app" /></div></section>
 
-    <section className="section programs"><div className="section-heading"><p className="eyebrow">Three ways to join the launch</p><h2>Choose the MyZippy path that fits you.</h2></div><div className="program-grid">
+    <section className="section programs" id="get-involved"><div className="section-heading"><p className="eyebrow">Be part of the MyZippy launch</p><h2>Get involved with MyZippy.app.</h2><p>Whether you own a business, connect people, or support an organization, there’s a place for you in the MyZippy launch.</p></div><div className="program-grid involvement-panel">
       <article id="tour-member"><span>For business owners</span><h3>MyZippy Founding Member</h3><p>Reserve our prelaunch special offer. The first to respond receive priority access, with a free 14-day trial beginning when MyZippy.app launches.</p><a href={signup}>Claim your Prelaunch Pricing and 14 Day Free Trial</a></article>
       <article id="tour-ambassador"><span>For connectors</span><h3>Founding Zippy Ambassador</h3><p>Introduce business owners you know. When an eligible referral becomes a paying customer, you earn $100.</p><a href="mailto:info@myzippy.app?subject=Founding%20Zippy%20Ambassador">Become an Ambassador →</a></article>
       <article id="tour-fundraising"><span>For organizations</span><h3>Zippy Fundraising Partner</h3><p>Raise money through your supporter network. ZippyMedia.AI donates $100 for each eligible referred business that becomes a paying customer.</p><a href="mailto:info@myzippy.app?subject=Zippy%20Fundraising%20Partner">Start fundraising →</a></article>
