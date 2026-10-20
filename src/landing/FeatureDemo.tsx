@@ -28,7 +28,7 @@ const tour = [
   { title: "Built from real experience", target: "why", narration: [founderCopy.heading, ...founderCopy.paragraphs].join(" ") },
   { title: "Get involved · For business owners", target: "tour-member", narration: "For business owners, become a MyZippy Founding Member and reserve prelaunch pricing. The first to respond receive priority access. Everyone will receive their own individual link and QR code." },
   { title: "Get involved · For connectors", target: "tour-ambassador", narration: "For connectors, become a Founding Zippy Ambassador. Introduce business owners and earn one hundred dollars when an eligible referral becomes a paying customer." },
-  { title: "Get involved · For organizations", target: "tour-fundraising", narration: "For organizations, become a Zippy Fundraising Partner. ZippyMedia donates one hundred dollars for each eligible referred business that becomes a paying customer. Share with your supporters to raise funds." },
+  { title: "Get involved · For organizations", target: "tour-fundraising", narration: "For organizations. Zippy Fundraising Partner. Raise money through your supporter network. ZippyMedia.AI donates $100 for each eligible referred business that becomes a paying customer. Start fundraising." },
   { title: "Your prelaunch offer", target: "pricing", narration: "One app. Total control. Claim your Prelaunch Pricing and free fourteen day trial. Your free fourteen day trial begins when MyZippy app launches. Thank you for joining us." },
 ];
 
