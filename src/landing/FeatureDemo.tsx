@@ -17,7 +17,7 @@ const features = [
 
 const featureStart = 2;
 const tour = [
-  { title: "Run your business from the palm of your hand", target: "top", narration: "Run your business from the palm of your hand. Never miss a call, client, or dollar again. MyZippy brings your messages, follow-ups, bookings and business tools into one app. Claim your prelaunch pricing and fourteen day free trial, with priority access for the first to respond." },
+  { title: "Run your business from the palm of your hand", target: "top", narration: "Run your business from the palm of your hand. Never miss a call, client, or dollar again. MyZippy brings your messages, follow-ups, bookings and business tools into one app. MyZippy.app offers all the media and marketing tools you need for success. Claim your prelaunch pricing and fourteen day free trial, with priority access for the first to respond." },
   { title: "Everything you need to keep business moving", target: "features-intro", narration: "Everything you need to keep business moving. Hear the features, then continue through how it works, our story, the ways to join, and your prelaunch offer. The page scrolls along with the narration. Let's explore what MyZippy can do for your business." },
   ...features.map((feature, index) => ({ ...feature, target: `feature-card-${index}` })),
   { title: "How it works · The missed call", target: "tour-step-0", narration: "Now, let's follow a missed call from start to finish. You're up a ladder, under a sink, driving, or already helping a customer. You can't always stop to answer. That's where Zippy steps in." },
