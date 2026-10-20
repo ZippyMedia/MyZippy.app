@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { founderCopy } from "./landing-copy";
 
 const features = [
   { icon: "✦", title: "AI Assistant", description: "Smart AI tools that help grow and manage your business.", narration: "Your AI Assistant drafts professional customer replies, estimate follow-ups, and review requests in seconds, helping you keep conversations moving." },
@@ -20,11 +21,11 @@ const tour = [
   { title: "Everything you need to keep business moving", target: "features-intro", narration: "Everything you need to keep business moving. Let's take a quick look." },
   ...features.map((feature, index) => ({ ...feature, target: `feature-card-${index}` })),
   { title: "How it works · The missed call", target: "tour-step-0", narration: "Here's how it connects: you're working and miss a call." },
-  { title: "How it works · Instant text back", target: "tour-step-1", narration: "Zippy texts back instantly in your business's voice." },
+  { title: "How it works · Your choice of response", target: "tour-step-1", narration: "Zippy AI assistant answers or sends a text back instantly. Your choice how Zippy responds." },
   { title: "How it works · One inbox", target: "tour-step-2", narration: "The lead and conversation land in your unified inbox." },
   { title: "How it works · Follow-up and scheduling", target: "tour-step-3", narration: "Zippy answers questions, follows up, and offers available times." },
   { title: "How it works · The booking", target: "tour-step-4", narration: "The booking appears on your calendar, with the conversation attached." },
-  { title: "Built from real experience", target: "why", narration: "Built by a contractor with over forty years in the trades. Our founder and volunteers also created The SMART Ride: seventeen million dollars raised over twenty years, with one hundred percent of participant-raised funds benefiting Florida HIV and AIDS organizations." },
+  { title: "Built from real experience", target: "why", narration: [founderCopy.heading, ...founderCopy.paragraphs].join(" ") },
   { title: "Get involved · For business owners", target: "tour-member", narration: "For business owners, become a MyZippy Founding Member and reserve prelaunch pricing. The first to respond receive priority access. Everyone will receive their own individual link and QR code." },
   { title: "Get involved · For connectors", target: "tour-ambassador", narration: "For connectors, become a Founding Zippy Ambassador. Introduce business owners and earn one hundred dollars when an eligible referral becomes a paying customer." },
   { title: "Get involved · For organizations", target: "tour-fundraising", narration: "For organizations, become a Zippy Fundraising Partner. ZippyMedia donates one hundred dollars for each eligible referred business that becomes a paying customer. Share with your supporters to raise funds." },

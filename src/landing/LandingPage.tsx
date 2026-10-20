@@ -3,7 +3,7 @@ import { founderCopy } from "./landing-copy";
 
 const steps = [
   ["The call comes in—and you can’t answer","You’re up a ladder, under a sink, driving, or already with a customer."],
-  ["Zippy texts back instantly","Seconds later, the caller gets a reply in your voice—before they call the next business."],
+  ["Zippy AI assistant answers or sends a text back instantly.","Your choice how Zippy responds."],
   ["The lead lands in your inbox","Caller details and conversation history stay together with SMS, web chat, Messenger and Instagram."],
   ["Zippy follows up and offers times","It handles common questions, offers available appointments and keeps the conversation moving."],
   ["You get the booking","The appointment appears on your calendar, with the complete conversation attached to the contact."],
