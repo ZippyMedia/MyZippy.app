@@ -11,6 +11,10 @@ function safePublicPlugin() {
     closeBundle() {
       const publicDir = path.resolve(__dirname, 'public');
       const distDir = path.resolve(__dirname, 'dist');
+      // Keep existing /landing/ links working on GitHub Pages.
+      const landingDir = path.join(distDir, 'landing');
+      fs.mkdirSync(landingDir, { recursive: true });
+      fs.copyFileSync(path.join(distDir, 'index.html'), path.join(landingDir, 'index.html'));
       const files = fs.readdirSync(publicDir);
       for (const file of files) {
         const src = path.join(publicDir, file);
