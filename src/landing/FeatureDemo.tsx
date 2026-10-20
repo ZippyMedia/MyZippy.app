@@ -48,11 +48,13 @@ function chooseNarrator(voices: SpeechSynthesisVoice[]) {
 export default function FeatureDemo() {
   const [active, setActive] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [status, setStatus] = useState("Tap Start Demo for the full narrated page tour, or choose a feature to hear its description.");
+  const [status, setStatus] = useState("Your narrated tour starts automatically. If audio doesn’t begin, tap Start Demo.");
+  const [audioBlocked, setAudioBlocked] = useState(false);
   const run = useRef(0);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const narrator = useRef<SpeechSynthesisVoice | undefined>(undefined);
   const transition = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoplayWatch = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     if (active === null || !playing) return;
     const target = document.getElementById(tour[active].target);
@@ -72,6 +74,7 @@ export default function FeatureDemo() {
     if ("speechSynthesis" in window) window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
     const cancel = () => {
       if (transition.current !== null) clearTimeout(transition.current);
+    if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
       run.current++;
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       utterance.current = null;
@@ -83,8 +86,17 @@ export default function FeatureDemo() {
     return () => { if ("speechSynthesis" in window) window.speechSynthesis.removeEventListener("voiceschanged", loadVoices); document.removeEventListener("visibilitychange", visibility); window.removeEventListener("pagehide", cancel); cancel(); };
   }, []);
 
+  useEffect(() => {
+    const initialRun = run.current;
+    const timer = setTimeout(() => {
+      if (!document.hidden && run.current === initialRun) start(0, true, true);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
+
   function stop() {
     if (transition.current !== null) clearTimeout(transition.current);
+    if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
     run.current++;
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     utterance.current = null;
@@ -92,10 +104,23 @@ export default function FeatureDemo() {
     setStatus("Demo stopped. Tap Replay Demo to start again.");
   }
 
-  function start(index = 0, fullTour = true) {
+  function start(index = 0, fullTour = true, autoplay = false) {
     if (transition.current !== null) clearTimeout(transition.current);
+    if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
     run.current++;
     const token = run.current;
+    setAudioBlocked(false);
+    const requestTap = () => {
+      if (token !== run.current) return;
+      run.current++;
+      if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
+      window.speechSynthesis.cancel();
+      utterance.current = null;
+      setActive(null);
+      setPlaying(false);
+      setAudioBlocked(true);
+      setStatus("Tap Start Audio to hear the narrated tour. Your browser needs a tap before playing sound.");
+    };
     if (!("speechSynthesis" in window)) {
       setActive(index);
       setPlaying(false);
@@ -134,8 +159,11 @@ export default function FeatureDemo() {
       u.pitch = 1;
       u.volume = .82;
       if (voice) u.voice = voice;
+      let began = false;
       u.onstart = () => {
         if (token !== run.current) return;
+        began = true;
+        if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
         const card = document.getElementById(tour[i].target);
         if (!card) return;
         const rect = card.getBoundingClientRect();
@@ -159,11 +187,20 @@ export default function FeatureDemo() {
       };
       u.onerror = () => {
         if (token !== run.current) return;
+        if (autoplay && i === index && !began) { requestTap(); return; }
         setPlaying(false);
         utterance.current = null;
         setStatus("Audio couldn't play. Tap a feature to try again; its description is shown below.");
       };
-      window.speechSynthesis.speak(u);
+      try {
+        window.speechSynthesis.speak(u);
+        if (autoplay && i === index && !began && token === run.current) {
+          autoplayWatch.current = setTimeout(requestTap, 4000);
+        }
+      } catch {
+        if (autoplay) requestTap();
+        else u.onerror?.(new Event("error") as SpeechSynthesisErrorEvent);
+      }
     };
     speak(index);
   }
@@ -179,9 +216,9 @@ export default function FeatureDemo() {
     </button>)}</div></div>
     {active !== null && active < features.length && <div className="feature-narration"><p className="eyebrow">{tour[active].title}</p><p>{tour[active].narration}</p></div>}
   </section>
-    {active !== null && <aside className="tour-player" aria-label="Narrated page tour controls">
-      <div><span className="eyebrow">{playing ? `Section ${active + 1} of ${tour.length}` : "Narrated page tour"}</span><strong>{playing ? tour[active].title : status.startsWith("Tour complete") ? "Tour complete" : "Tour stopped"}</strong></div>
-      <button type="button" className="button" onClick={() => playing ? stop() : start()}>{playing ? "■ Stop" : "▶ Replay"}</button>
+    {(active !== null || audioBlocked) && <aside className="tour-player" aria-label="Narrated page tour controls">
+      <div><span className="eyebrow">{playing && active !== null ? `Section ${active + 1} of ${tour.length}` : "Narrated page tour"}</span><strong>{playing && active !== null ? tour[active].title : audioBlocked ? "Tap to start your audio tour" : status.startsWith("Tour complete") ? "Tour complete" : "Tour stopped"}</strong></div>
+      <button type="button" className="button" onClick={() => playing ? stop() : start()}>{playing ? "■ Stop" : audioBlocked ? "▶ Start Audio" : "▶ Replay"}</button>
     </aside>}
   </>;
 }

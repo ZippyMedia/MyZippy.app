@@ -19,7 +19,7 @@ export default function Home() {
     </header>
 
     <section className="hero section" id="top">
-      <div className="hero-copy"><p className="eyebrow">AI-powered business automation</p><h1>Run your business from the palm of <em>your hand.</em></h1><p className="lead">Never miss a <strong>call, client, or dollar</strong> again. MyZippy brings your messages, follow-ups, bookings and business tools into one app.</p><div className="actions"><a className="button" href={signup}>Claim your Prelaunch Pricing and 14 Day Free Trial</a><a className="button button-ghost" href="#features">Watch Demo</a></div><p className="fineprint">Prelaunch special offer <span>•</span> Priority access for the first to respond</p></div>
+      <div className="hero-copy"><p className="eyebrow">AI-powered business automation</p><h1>Run your business from the palm of <em>your hand.</em></h1><p className="lead">Never miss a <strong>call, client, or dollar</strong> again. MyZippy brings your messages, follow-ups, bookings and business tools into one app.</p><div className="actions"><a className="button" href={signup}>Claim your Prelaunch Pricing and 14 Day Free Trial</a></div><p className="fineprint">Prelaunch special offer <span>•</span> Priority access for the first to respond</p></div>
       <div className="hero-art"><div className="glow"/><img src="/zippy-hero.png" alt="Zippy mascot holding a phone showing the MyZippy dashboard"/></div>
     </section>
     <div className="ticker"><div>More leads <i>•</i> More bookings <i>•</i> More sales <i>•</i> More freedom <i>•</i> One app. Total control.</div></div>
