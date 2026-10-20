@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { founderCopy } from "./landing-copy";
 
 const features = [
+  { icon: "✦", title: "AI Assistant", description: "Smart AI tools that help grow and manage your business.", narration: "Your AI Assistant drafts professional customer replies, estimate follow-ups, and review requests in seconds, helping you keep conversations moving." },
   { icon: "◎", title: "ChatGPT", description: "AI-powered content creation, ideas and business support.", narration: "ChatGPT helps you create content, plan your marketing, find fresh ideas, and turn them into clear customer messages." },
   { icon: "↗", title: "AI Text Back", description: "Instant automated texting for missed calls and new leads.", narration: "AI Text Back responds to missed calls in seconds, captures new leads, and keeps texts, web chat, Messenger, and Instagram together." },
   { icon: "▣", title: "Appointments", description: "Simple booking, scheduling and customer reminders.", narration: "Appointments lets customers book instantly and sends friendly reminders, helping you stay organized and reduce missed meetings." },
@@ -12,7 +13,6 @@ const features = [
   { icon: "⌂", title: "AI Website", description: "An AI-enhanced website designed to attract and convert.", narration: "Your AI-enhanced website helps customers discover your services, contact you, and take the next step, even while you're away." },
   { icon: "✉", title: "Broadcasts", description: "Send SMS, email and voice messages to your contacts.", narration: "Broadcasts sends updates, promotions, and offers to your contacts through text, email, or voice." },
   { icon: "⚙", title: "AI Configuration", description: "Control Zippy's tone, language and automated behavior.", narration: "AI Configuration puts you in control of Zippy's tone, language, and automated behavior, so it sounds like your business." },
-  { icon: "✦", title: "AI Assistant", description: "Smart AI tools that help grow and manage your business.", narration: "Your AI Assistant drafts professional customer replies, estimate follow-ups, and review requests in seconds, helping you keep conversations moving." },
 ];
 
 const featureStart = 2;
@@ -236,7 +236,7 @@ export default function FeatureDemo() {
       <button type="button" className="button" onClick={() => playing ? stop() : start()} aria-label={playing ? "Stop narrated page tour" : active === null ? "Start narrated page tour" : "Replay narrated page tour from the beginning"}>{playing ? "■ Stop Demo" : active === null ? "▶ Start Demo" : "▶ Replay Demo"}</button>
       <p role="status" aria-live="polite">{status}</p>
     </div>
-    <div className="feature-layout"><div className="feature-grid">{features.map((f, i) => <button type="button" key={f.title} id={`feature-card-${i}`} className={`feature${f.title === "AI Assistant" ? " feature-centered" : ""}${active === i + featureStart ? " feature-active" : ""}`} onClick={() => start(i + featureStart, false)} aria-label={`Hear about ${f.title}`} aria-pressed={active === i + featureStart}>
+    <div className="feature-layout"><div className="feature-grid">{features.map((f, i) => <button type="button" key={f.title} id={`feature-card-${i}`} className={`feature${active === i + featureStart ? " feature-active" : ""}`} onClick={() => start(i + featureStart, false)} aria-label={`Hear about ${f.title}`} aria-pressed={active === i + featureStart}>
       <span className="feature-icon" aria-hidden="true">{f.icon}</span><span><b>{f.title}</b><small>{f.description}</small><span className="feature-listen">{active === i + featureStart && playing ? "● Playing" : "▶ Listen"}</span></span>
     </button>)}</div></div>
     {active !== null && active >= featureStart && active < featureStart + features.length && <div className="feature-narration"><p className="eyebrow">{tour[active].title}</p><p>{tour[active].narration}</p></div>}
