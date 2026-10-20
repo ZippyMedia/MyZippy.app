@@ -14,6 +14,20 @@ const features = [
   { icon: "⚙", title: "AI Configuration", description: "Control Zippy's tone, language and automated behavior.", narration: "Make Zippy sound like your business. AI Configuration lets you choose the tone, language, and automated behavior that fit your customers. You're in control of how your assistant communicates. MyZippy app. One app. Total control." },
 ];
 
+const tour = [
+  ...features.map((feature, index) => ({ ...feature, target: `feature-card-${index}` })),
+  { title: "How it works · The missed call", target: "tour-step-0", narration: "Now, let's follow a missed call from start to finish. You're up a ladder, under a sink, driving, or already helping a customer. You can't always stop to answer. That's where Zippy steps in." },
+  { title: "How it works · Instant text back", target: "tour-step-1", narration: "Zippy texts the caller back in seconds, using your business's voice. A quick, friendly response gives that customer a reason to stay in touch before calling the next business." },
+  { title: "How it works · One inbox", target: "tour-step-2", narration: "The new lead and conversation land in your unified inbox. Caller details stay together with texts, web chat, Messenger, and Instagram, so it's easier to see the whole conversation." },
+  { title: "How it works · Follow-up and scheduling", target: "tour-step-3", narration: "Zippy keeps the conversation moving. It can answer common questions, follow up, and offer available appointment times, helping the customer take the next step." },
+  { title: "How it works · The booking", target: "tour-step-4", narration: "When the customer books, the appointment appears on your calendar, with the conversation attached to their contact. One connected process helps turn a missed call into a new opportunity." },
+  { title: "Built from real experience", target: "why", narration: "MyZippy was built by a contractor with more than forty years in the trades, who understands what a missed call can cost. The founder and dedicated volunteers also created The SMART Ride. Over twenty years, participants raised seventeen million dollars for Florida HIV and AIDS organizations, with one hundred percent of participant-raised funds going to the cause. That spirit of service continues through MyZippy." },
+  { title: "MyZippy Founding Member", target: "tour-member", narration: "There are three ways to join the launch. First, business owners can become MyZippy Founding Members. Claim your prelaunch pricing and fourteen day free trial. The first to respond receive priority access, and your free trial begins when MyZippy launches." },
+  { title: "Founding Zippy Ambassador", target: "tour-ambassador", narration: "Love connecting people? Become a Founding Zippy Ambassador. Introduce business owners you know. When an eligible referral becomes a paying customer, you earn one hundred dollars. It's a simple way to share MyZippy and be rewarded for helping a business discover it." },
+  { title: "Zippy Fundraising Partner", target: "tour-fundraising", narration: "Organizations can join as Zippy Fundraising Partners. Share MyZippy with your supporter network, and ZippyMedia donates one hundred dollars for each eligible referred business that becomes a paying customer. Help local businesses while raising money for your organization." },
+  { title: "Your prelaunch offer", target: "pricing", narration: "One app. Total control. Bring your business communication, follow-ups, bookings, and marketing tools together. Ready to take the next step? Tap Claim your Prelaunch Pricing and fourteen Day Free Trial. You'll receive priority access, with your free fourteen day trial beginning when MyZippy launches. Thank you for taking the tour." },
+];
+
 // Prefer youthful male narrators; keep their natural pitch and use a relaxed pace.
 function chooseNarrator(voices: SpeechSynthesisVoice[]) {
   const youthful = ["andrew", "guy", "aaron", "evan", "ryan", "joey", "eric"];
@@ -33,12 +47,21 @@ function chooseNarrator(voices: SpeechSynthesisVoice[]) {
 export default function FeatureDemo() {
   const [active, setActive] = useState<number | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [status, setStatus] = useState("Tap Start Demo, or choose a feature to hear its description.");
+  const [status, setStatus] = useState("Tap Start Demo for the full narrated page tour, or choose a feature to hear its description.");
   const run = useRef(0);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const narrator = useRef<SpeechSynthesisVoice | undefined>(undefined);
   const transition = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const cards = useRef<(HTMLButtonElement | null)[]>([]);
+  useEffect(() => {
+    if (active === null || !playing) return;
+    const target = document.getElementById(tour[active].target);
+    target?.classList.add("tour-active");
+    document.body.classList.add("tour-running");
+    return () => {
+      target?.classList.remove("tour-active");
+      document.body.classList.remove("tour-running");
+    };
+  }, [active, playing]);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -95,15 +118,15 @@ export default function FeatureDemo() {
           return;
         }
       }
-      if (i >= features.length) {
+      if (i >= tour.length) {
         setPlaying(false);
         utterance.current = null;
-        setStatus("Demo complete. Replay anytime, or choose a feature to hear it again.");
+        setStatus("Tour complete. Claim your prelaunch offer below, or replay anytime.");
         return;
       }
       setActive(i);
-      setStatus(`${fullTour ? "Feature " + (i + 1) + " of " + features.length + " · " : "Now playing · "}${features[i].title}`);
-      const u = new SpeechSynthesisUtterance(features[i].narration);
+      setStatus(`${fullTour ? "Section " + (i + 1) + " of " + tour.length + " · " : "Now playing · "}${tour[i].title}`);
+      const u = new SpeechSynthesisUtterance(tour[i].narration);
       utterance.current = u;
       u.lang = "en-US";
       u.rate = .98;
@@ -112,7 +135,7 @@ export default function FeatureDemo() {
       if (voice) u.voice = voice;
       u.onstart = () => {
         if (token !== run.current) return;
-        const card = cards.current[i];
+        const card = document.getElementById(tour[i].target);
         if (!card) return;
         const rect = card.getBoundingClientRect();
         if (rect.top < 145 || rect.bottom > window.innerHeight) card.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "center" });
@@ -121,9 +144,9 @@ export default function FeatureDemo() {
         if (token !== run.current) return;
         if (fullTour) {
           utterance.current = null;
-          transition.current = setTimeout(() => speak(i + 1), 280);
+          transition.current = setTimeout(() => speak(i + 1), 180);
         }
-        else { setPlaying(false); utterance.current = null; setStatus(`${features[i].title} complete. Choose another feature, or replay the full demo.`); }
+        else { setPlaying(false); utterance.current = null; setStatus(`${tour[i].title} complete. Choose another feature, or replay the full demo.`); }
       };
       u.onerror = () => {
         if (token !== run.current) return;
@@ -136,15 +159,20 @@ export default function FeatureDemo() {
     speak(index);
   }
 
-  return <section className="section feature-section" id="features" aria-labelledby="features-heading">
-    <div className="section-heading"><p className="eyebrow">Features · Audio demo</p><h2 id="features-heading">Everything you need to keep business moving.</h2><p>Hear how each feature works. Follow the highlighted cards, or tap any feature to explore it.</p></div>
+  return <><section className="section feature-section" id="features" aria-labelledby="features-heading">
+    <div className="section-heading"><p className="eyebrow">Features · Audio demo</p><h2 id="features-heading">Everything you need to keep business moving.</h2><p>Hear the features, then continue through how it works, our story, the ways to join, and your prelaunch offer. The page scrolls along with the narration.</p></div>
     <div className="feature-demo-controls">
-      <button type="button" className="button" onClick={() => playing ? stop() : start()} aria-label={playing ? "Stop feature demo" : active === null ? "Start feature demo" : "Replay feature demo from the beginning"}>{playing ? "■ Stop Demo" : active === null ? "▶ Start Demo" : "▶ Replay Demo"}</button>
+      <button type="button" className="button" onClick={() => playing ? stop() : start()} aria-label={playing ? "Stop narrated page tour" : active === null ? "Start narrated page tour" : "Replay narrated page tour from the beginning"}>{playing ? "■ Stop Demo" : active === null ? "▶ Start Demo" : "▶ Replay Demo"}</button>
       <p role="status" aria-live="polite">{status}</p>
     </div>
-    <div className="feature-layout"><div className="feature-grid">{features.map((f, i) => <button type="button" key={f.title} ref={el => { cards.current[i] = el; }} className={`feature${active === i ? " feature-active" : ""}`} onClick={() => start(i, false)} aria-label={`Hear about ${f.title}`} aria-pressed={active === i}>
+    <div className="feature-layout"><div className="feature-grid">{features.map((f, i) => <button type="button" key={f.title} id={`feature-card-${i}`} className={`feature${active === i ? " feature-active" : ""}`} onClick={() => start(i, false)} aria-label={`Hear about ${f.title}`} aria-pressed={active === i}>
       <span className="feature-icon" aria-hidden="true">{f.icon}</span><span><b>{f.title}</b><small>{f.description}</small><span className="feature-listen">{active === i && playing ? "● Playing" : "▶ Listen"}</span></span>
     </button>)}</div></div>
-    {active !== null && <div className="feature-narration"><p className="eyebrow">{features[active].title}</p><p>{features[active].narration}</p></div>}
-  </section>;
+    {active !== null && active < features.length && <div className="feature-narration"><p className="eyebrow">{tour[active].title}</p><p>{tour[active].narration}</p></div>}
+  </section>
+    {active !== null && <aside className="tour-player" aria-label="Narrated page tour controls">
+      <div><span className="eyebrow">{playing ? `Section ${active + 1} of ${tour.length}` : "Narrated page tour"}</span><strong>{playing ? tour[active].title : status.startsWith("Tour complete") ? "Tour complete" : "Tour stopped"}</strong></div>
+      <button type="button" className="button" onClick={() => playing ? stop() : start()}>{playing ? "■ Stop" : "▶ Replay"}</button>
+    </aside>}
+  </>;
 }
