@@ -39,3 +39,5 @@ footer.legal-footer .legal-links{justify-content:center;text-align:center}
 .involvement-panel article+article{border-left:1px solid var(--line);border-radius:0}
 .involvement-panel article.tour-active{outline-offset:-3px;border-radius:10px}
 @media(max-width:900px){.involvement-panel article+article{border-left:0;border-top:1px solid var(--line)}.involvement-panel article{padding:26px 22px}}
+
+#top,#features-intro{scroll-margin-top:145px}
