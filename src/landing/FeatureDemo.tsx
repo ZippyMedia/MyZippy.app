@@ -54,6 +54,7 @@ export default function FeatureDemo() {
   const [status, setStatus] = useState("Your narrated tour starts automatically. If audio doesn’t begin, tap Start Demo.");
   const [audioBlocked, setAudioBlocked] = useState(false);
   const run = useRef(0);
+  const startedOrRequested = useRef(false);
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const narrator = useRef<SpeechSynthesisVoice | undefined>(undefined);
   const transition = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -90,14 +91,32 @@ export default function FeatureDemo() {
   }, []);
 
   useEffect(() => {
+    const beginOnInteraction = (event: Event) => {
+      if (startedOrRequested.current || document.hidden) return;
+      if (event.type === "keydown" && !["Enter", " "].includes((event as KeyboardEvent).key)) return;
+      // Dedicated links and controls retain their own actions.
+      const target = event.target as HTMLElement | null;
+      if (target?.closest?.("a, button, input, textarea, select, [role=button]")) return;
+      start(0, true);
+    };
+    document.addEventListener("pointerup", beginOnInteraction);
+    document.addEventListener("keydown", beginOnInteraction);
+    return () => {
+      document.removeEventListener("pointerup", beginOnInteraction);
+      document.removeEventListener("keydown", beginOnInteraction);
+    };
+  }, []);
+
+  useEffect(() => {
     const initialRun = run.current;
     const timer = setTimeout(() => {
       if (!document.hidden && run.current === initialRun) start(0, true, true);
-    }, 900);
+    }, 150);
     return () => clearTimeout(timer);
   }, []);
 
   function stop() {
+    startedOrRequested.current = true;
     if (transition.current !== null) clearTimeout(transition.current);
     if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
     run.current++;
@@ -108,6 +127,7 @@ export default function FeatureDemo() {
   }
 
   function start(index = 0, fullTour = true, autoplay = false) {
+    if (!autoplay) startedOrRequested.current = true;
     if (transition.current !== null) clearTimeout(transition.current);
     if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
     run.current++;
@@ -122,7 +142,7 @@ export default function FeatureDemo() {
       setActive(null);
       setPlaying(false);
       setAudioBlocked(true);
-      setStatus("Tap Start Audio to hear the narrated tour. Your browser needs a tap before playing sound.");
+      setStatus("Tap anywhere on the page to begin the narrated tour. Your browser needs a tap before playing sound.");
     };
     if (!("speechSynthesis" in window)) {
       setActive(index);
@@ -166,6 +186,7 @@ export default function FeatureDemo() {
       u.onstart = () => {
         if (token !== run.current) return;
         began = true;
+        startedOrRequested.current = true;
         if (autoplayWatch.current !== null) clearTimeout(autoplayWatch.current);
         const card = document.getElementById(tour[i].target);
         if (!card) return;
@@ -221,7 +242,7 @@ export default function FeatureDemo() {
     {active !== null && active >= featureStart && active < featureStart + features.length && <div className="feature-narration"><p className="eyebrow">{tour[active].title}</p><p>{tour[active].narration}</p></div>}
   </section>
     {(active !== null || audioBlocked) && <aside className="tour-player" aria-label="Narrated page tour controls">
-      <div><span className="eyebrow">{playing && active !== null ? `Section ${active + 1} of ${tour.length}` : "Narrated page tour"}</span><strong>{playing && active !== null ? tour[active].title : audioBlocked ? "Tap to start your audio tour" : status.startsWith("Tour complete") ? "Tour complete" : "Tour stopped"}</strong></div>
+      <div><span className="eyebrow">{playing && active !== null ? `Section ${active + 1} of ${tour.length}` : "Narrated page tour"}</span><strong>{playing && active !== null ? tour[active].title : audioBlocked ? "Tap anywhere to hear the tour" : status.startsWith("Tour complete") ? "Tour complete" : "Tour stopped"}</strong></div>
       <button type="button" className="button" onClick={() => playing ? stop() : start()}>{playing ? "■ Stop" : audioBlocked ? "▶ Start Audio" : "▶ Replay"}</button>
     </aside>}
   </>;
