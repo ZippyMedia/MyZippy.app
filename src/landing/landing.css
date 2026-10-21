@@ -44,3 +44,5 @@ footer.legal-footer .legal-links{justify-content:center;text-align:center}
 
 .hero .hero-cta-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:460px}
 .hero-cta-pair .button{width:100%;min-width:0;min-height:48px;padding:10px 12px;font-size:12px;line-height:1.25;text-align:center;gap:0}
+
+.hero .hero-cta-pair{display:flex;align-items:center;flex-wrap:wrap;max-width:100%;gap:14px}.hero-cta-pair .button{width:auto;min-width:170px}.reservation-link{color:var(--green);font-size:13px;font-weight:700;text-underline-offset:4px}.outcomes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding-block:45px}.outcomes article{border-top:2px solid var(--green);padding:20px 0}.outcomes h2{font-size:24px;letter-spacing:-.03em}.outcomes p{color:var(--muted);line-height:1.6}.outcomes .marketing-line{grid-column:1/-1;margin:0}@media(max-width:600px){.outcomes{grid-template-columns:1fr;gap:8px}.reservation-link{display:inline-block;padding:12px 0}}
